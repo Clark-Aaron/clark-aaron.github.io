@@ -7,7 +7,7 @@
 
 ## 数据类型
 
-Golang的数据类型分为值类型与引用类型，值类型即直接存储数据值的类型，而引用类型是存储指向真实变量的首地址的类型；其中值类型有数值类型、字符类型与逻辑类型，引用类型有指针、数组、结构体、函数、切片、接口、映射、通道。
+Golang的数据类型分为值类型与引用类型，值类型即直接存储数据值的类型，而引用类型是存储指向真实变量的首地址的类型；其中值类型有数值类型、字符类型、布尔类型与数组，引用类型有指针、结构体、函数、切片、接口、映射、通道。
 
 ### 数值类型
 
@@ -19,6 +19,11 @@ Golang的数据类型分为值类型与引用类型，值类型即直接存储�
 * `float32`与`float64`：
 * `complex64`与`complex128`：
 * `uintptr`：
+
+#### 进制
+
+* 进制标识
+* 进制转换
 
 ### 字符类型
 
@@ -41,24 +46,129 @@ Golang的数据类型分为值类型与引用类型，值类型即直接存储�
 
 ### 布尔类型
 
+布尔类型只有`true`与`flase`两个值，且在Golang中，不允许将整型转化为buer类型。
+
 ### 指针
+
+在Golang中，指针不能进行偏移和运算，属于安全指针。
+
+* 指针地址
+* 指针类型
+* 指针取值
+
+#### 指针的声明
+
+* 一般声明
+
+  ```go
+  var <ptrName> *<type>
+  ```
+
+#### 内存分配
+
+在指针声明之后，需要为指针分配地址。
+
+* `new()`分配内存。
+  
+  ```go
+  <ptrName> = new(<type>)
+  ```
+
+* `make()`只用于切片、映射、通道的内存创建,返回为本省。
+  
+  ```go
+  <varName> = make（<type>,<size>）
+  ```
+
+#### 特殊指针
+
+* 空指针：`nil`
+* 数组指针
+
 
 ### 数组
 
-### 结构体
 
-### 函数
+数组即一种具有固定长度的序列。
 
-#### 标准函数
 
-* `init()`函数
-* `mian()`函数
+* 数组的声明
+
+
+  ```go
+  // 一维数组
+  var <arrayName> [<elementCount>]<type>
+  // 多维数组
+  var <arrayName> [<elementCount_1>][<elementCount_2>]<type>
+  ```
+
+* 数组的初始化
+
+  
+  ```go
+  var <arrayName> = [<elementCount>]<type>{<elementValue_1>,<elementName_2>,...}
+  var <arrayName> [<elementCount>]<type> = [<elementCount>]<type>{<elementValue_1>,<elementName_2>,...}
+  var arr2 = [...]int{1, 2, 3, 4, 5, 6}
+  var str = [5]string{3: "hello world", 4: "tom"}
+  ```
+
+#### 特殊的数组
+
+* 指针数组：其元素为指针的数组。
 
 ### 切片
+
+切片是通过内部指针和相关属性引用数组片段来实现变长方案,操作的实际上是底层数组；内部实现的数据结构是通过指针引用底层数组，本身只是一个只读对象，类似于数组指针的议长封装。
+
+* 切片的定义：
+  
+  ```go 
+  var <sliceName> []<type>
+  ```
+
+* `make()`动态创建切片
+
+  ```go
+  var <sliceName> []<type> = make([]<type>,<elementCount>,<Cap>)
+  ```
+
+  > Note：当切片的元素超出底层数组容量时，会自动分配一个底层数组，与原数组无任何关系。
+
+
+### 结构体
+
+结构体是为我们自定义数据类型的类型，使用`struct`标识。
+
+* 结构体的定义：
+
+  ```go
+  type <typeName> struct {
+  	<elementName_1> <elementType_1>
+	<elementName_2> <elementType_2>
+  }
+  ```
+
+  > Note: type <newType> <type> 是用来定义一个新的类型，newType的特性于type的特性相同，以上写法属于type于struct语法的结合。
+
+* 结构体的实例化：
+
+  ```go
+  var <varName> <type>
+  ```
 
 ### 接口
 
 ### 映射
+
+map是一种无序的基于键值对的数据结构，必须初始化才能使用,底层仍为数组，将键经过hash后，对长度取余的值作为存储该键值的索引。
+
+> Note: 对于hash冲突时，采用开放地址法解决。
+
+* map的声明
+
+  ```go
+  map[<keyType>]<valueType>
+  ```
 
 ### 通道
 
@@ -88,14 +198,12 @@ Golang的数据类型分为值类型与引用类型，值类型即直接存储�
 ### 变量的初始化
 
 * 变量的标准初始化：在函数声明时，会使用默认的值来初始化变量，如果则需要指定初始化值。
-
   
   ```go
   var <varName> <type> = <initialValue>
   ```
 
 * 类型推导初始化：
-
 
   ```go
   var <varName> = <value>
@@ -104,7 +212,6 @@ Golang的数据类型分为值类型与引用类型，值类型即直接存储�
   ```
 
 * `:=`声明变量并初始化
-
 
   ```go
   <varName> := <value>
@@ -188,7 +295,9 @@ Golang的数据类型分为值类型与引用类型，值类型即直接存储�
 
   > Note: 可以使用`len()`获取变量的长度，`unsafe.Sizeof()`获取变量的内存大小。
 
-* `iota`：iota在const使用时初始化为0，之后没增加一行常量的定义，其值自动加一
+#### iota
+
+ `iota`：iota在const使用时初始化为0，之后没增加一行常量的定义，其值自动加一
 
 
 ## 类型转换
