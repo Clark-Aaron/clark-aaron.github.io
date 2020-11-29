@@ -1,9 +1,9 @@
 # Clark Aaron
 
-<!-- [//]: # (__author__ = "Clark Aaron") -->
+这是Clark Aaron的博客，记录Clark Aaron的学习与生活。
 
-This is a Clark's blog. Record learning results.
+## 新的随笔
 
-## 资源链接
+## 笔记目录
 
-* [Demo](/Golang/demo.md)
+
